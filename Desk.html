@@ -1,0 +1,122 @@
+
+<html>
+  <head>
+  
+    <title>Object Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.js"></script>
+  
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    
+  <style>
+    body
+  {
+  background-position: center;
+  background-size: cover;
+  background-image: url("https://wallpaperaccess.com/full/949174.jpg");
+  }
+  
+  .heading
+  {
+  font-size: 23px;
+  width: 100%;
+  margin: 0px;
+  }
+  
+  #status
+  {
+  font-size: 18px;
+  }
+  
+  canvas
+  {
+  box-shadow: 10px 10px 10px pink;
+  border-radius: 10px;
+  }
+  a
+  {
+    float:right;
+    font-size: 20px !important;
+    margin: 5px;
+    background: black;
+    cursor: pointer;
+    color: white;
+  }
+  a:hover
+  {
+    color:red !important;
+  }
+  </style>
+  
+  </head>
+  <center>
+    <h1 class="btn btn-info heading">Object Detection</h1>
+    <a href="index.html" class="btn">Back</a>
+    <br><br>
+    <h3 id="status" class="btn btn-danger">There are 3 objects out of which 2 has been detected.</h3>
+  </center>
+  
+  <script>
+    objectDetector= "";
+  
+  img = "";
+  objects = [];
+  status = "";
+  
+  function preload(){
+    img = loadImage('https://image.shutterstock.com/image-photo/laptop-computer-blank-screen-office-260nw-1450440932.jpg');
+  }
+  
+  
+  function setup() {
+      canvas = createCanvas(500,400);
+      canvas.position(400,180);
+    objectDetector = ml5.objectDetector('cocossd', modelLoaded);
+    document.getElementById("status").innerHTML = "Status : Detecting Objects";
+  }
+  
+  function modelLoaded() {
+    console.log("Model Loaded!")
+    status = true;
+    objectDetector.detect(img, gotResult);
+  }
+  function draw()
+{
+image(img, 50,60,400,300);
+   if(status!="")
+   {
+    objectDetector.detect(img,gotResult);  
+    for(i=0; i<objects.length;i++)
+       {
+           fill("#FF0000");
+           percent=floor(objects[i].confidence*100);
+           text("mouse"+" "+percent+"%", 200,110);
+           noFill();
+           stroke("#FF0000");
+     rect(100, 120, 250, 200 );
+     fill("#FF0000");
+           percent=floor(objects[i].confidence*100);
+           text("mouse"+" "+percent+"%", 320,300);
+           noFill();
+           stroke("#FF0000");
+     rect(355,240, 90, 90 );
+   }
+}
+}
+  
+  function gotResult(error, results) {
+    if (error) {
+      console.log(error);
+    }
+    console.log(results);
+    objects = results;
+  }
+  </script>
+  
+  </body>
+  
+  </html>
